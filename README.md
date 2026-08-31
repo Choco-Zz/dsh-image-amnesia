@@ -30,17 +30,17 @@ Install once per **profile**. You do not install it per agent. Subagents, task-b
 | Key | Default | Meaning |
 | --- | --- | --- |
 | `enabled` | `true` | Master switch |
-| `maxImages` | `1` | Images kept in the outbound request |
-| `maxBytes` | `2097152` | Byte budget for kept images |
+| `maxImages` | `6` | Images kept in the outbound request |
+| `maxBytes` | `6291456` | Byte budget for kept images |
 | `keepAtLeast` | `1` | Never drop the newest N images |
 
-Settings → Plugins → Plugin configuration → Image amnesia. Set `maxImages` to 3 to keep three images in one request. Refresh or restart DSH if the card is missing. You can also edit `image-amnesia.maxImages` in `settings.yaml`.
+Settings → Plugins → Plugin configuration → Image amnesia. Default is 6 images / 6MB. Refresh or restart DSH if the card is missing. You can also edit `image-amnesia.maxImages` in `settings.yaml`.
 
 ## Verify
 
-Paste three images in one session. Host log:
+Paste seven images in one session. Host log:
 
-`dsh-image-amnesia: dropped 2/3 image(s); kept 1`
+`dsh-image-amnesia: dropped 1/7 image(s); kept 6`
 
 ```sh
 node --test
