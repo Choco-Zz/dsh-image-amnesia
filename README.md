@@ -34,7 +34,7 @@ Install once per **profile**. You do not install it per agent. Subagents, task-b
 | `maxBytes` | `2097152` | Byte budget for kept images |
 | `keepAtLeast` | `1` | Never drop the newest N images |
 
-Settings → Plugin configuration → dsh-image-amnesia.
+Settings → Plugins → Plugin configuration → Image amnesia. Set `maxImages` to 3 to keep three images in one request. Refresh or restart DSH if the card is missing. You can also edit `image-amnesia.maxImages` in `settings.yaml`.
 
 ## Verify
 
