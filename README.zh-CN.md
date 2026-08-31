@@ -12,7 +12,7 @@ DeepSeek Harness 全局插件：让 grok / Claude / GPT 等**原生看图模型�
 - 中转站进程被撑死
 - compact 也救不了，因为 image parts 还在
 
-本插件在适配器真正发 HTTP 之前，按「从旧到新」丢掉多余的图，**至少保留最新 1 张**给原生视觉。
+本插件在适配器真正发 HTTP 之前，按「从旧到新」丢掉多余的图，**默认最多留最新 6 张**给原生视觉。
 
 不会改 session log，所以回放、导出、本地查看都还在。
 
@@ -44,20 +44,18 @@ Web 长驻进程一般会热载 patch；若设置页没出现 `dsh-image-amnesia
 | 项 | 默认 | 含义 |
 | --- | --- | --- |
 | `enabled` | `true` | 总开关 |
-| `maxImages` | `1` | 请求里最多留几张图 |
-| `maxBytes` | `2097152`（2MB） | 留下的图合计体积上限 |
+| `maxImages` | `6` | 请求里最多留几张图 |
+| `maxBytes` | `6291456`（6MB） | 留下的图合计体积上限 |
 | `keepAtLeast` | `1` | 即使超体积也至少留最新 N 张，避免原生看图变成 0 张 |
 
-设置页路径：**设置 → 插件 → 插件配置 → Image amnesia**。把 `maxImages` 改成 3 即可。卡片若还没出现，刷新页面或重启 DSH Desktop。也可以改 `~/.dsh/settings.yaml` 里的 `image-amnesia.maxImages`。
-
-同一条用户消息里贴了 3 张参考图、又希望模型同时看见，把 `maxImages` 调到 3。
+设置页路径：**设置 → 插件 → 插件配置 → Image amnesia**。默认 `maxImages=6`。卡片若还没出现，刷新页面或重启 DSH Desktop。也可以改 `~/.dsh/settings.yaml` 里的 `image-amnesia.maxImages`。
 
 ## 怎么验证
 
-1. 连续往同一会话贴 3 张图并提问。
-2. Host 日志应出现 `dsh-image-amnesia: dropped 2/3 image(s); kept 1`。
-3. 模型仍能描述**最后一张**；中转站不再因历史图爆炸。
-4. 本地会话时间线里 3 张图都还在。
+1. 连续往同一会话贴 7 张图并提问。
+2. Host 日志应出现 `dsh-image-amnesia: dropped 1/7 image(s); kept 6`。
+3. 模型仍能描述**最新 6 张**；更早的图不再打进中转站。
+4. 本地会话时间线里 7 张图都还在。
 
 ```bat
 cd D:\CodexProjects\dsh-image-amnesia
