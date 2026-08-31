@@ -50,8 +50,8 @@ window.__ModuleLoader__.load({
           : { value: {}, writable: false };
         var value = (snap && snap.value) || {};
         var writable = !!(snap && snap.writable);
-        var maxImages = value.maxImages == null ? 1 : value.maxImages;
-        var maxBytes = value.maxBytes == null ? 2097152 : value.maxBytes;
+        var maxImages = value.maxImages == null ? 6 : value.maxImages;
+        var maxBytes = value.maxBytes == null ? 6291456 : value.maxBytes;
         var keepAtLeast = value.keepAtLeast == null ? 1 : value.keepAtLeast;
         var enabled = value.enabled !== false;
 
@@ -95,7 +95,7 @@ window.__ModuleLoader__.load({
               style: fieldStyle(),
               children: [
                 jsx.jsx("span", { style: labelStyle(), children: "maxImages（最多留几张图）" }),
-                jsx.jsx("p", { style: hintStyle(), children: "同一条消息要同时给 3 张参考图，改成 3。" }),
+                jsx.jsx("p", { style: hintStyle(), children: "默认 6。只要最新几张给模型看，就改这个数。" }),
                 jsx.jsx("input", {
                   type: "number",
                   min: 1,
