@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.1
+
+- Register the `image-amnesia` settings namespace and a Plugin configuration card so `maxImages` is editable in the GUI.
+
 ## 1.0.0
 
 - Wrap every LLM adapter `prepareCall().stream` so frozen agent-loop requests stay valid.
