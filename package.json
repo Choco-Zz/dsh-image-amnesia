@@ -1,6 +1,6 @@
 {
   "name": "dsh-image-amnesia",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Keep native vision, drop historical images before they hit relay providers. Global DeepSeek Harness bundle for every agent.",
   "type": "module",
   "main": "src/index.js",
