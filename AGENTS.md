@@ -6,4 +6,4 @@ This DeepSeek Harness profile bundle wraps **every** `ctx.llm` adapter in the pr
 - Do not mutate session logs to strip images. The original attachments stay local.
 - Subagents, task-board jobs, and new chats inherit the wrap automatically. You do not install this per agent.
 - If a turn still needs an older image, re-read its file path in the current turn.
-- Defaults: `maxImages=6`, `maxBytes=6MB`, `keepAtLeast=1`. Change them in Settings → Plugins → Plugin configuration → Image amnesia.
+- Defaults: `maxImages=6`, `maxBytes=6MB`, `keepAtLeast=1`. Change them in `~/.dsh/settings.yaml` (`image-amnesia.maxImages`) or `cordis.patch.yml`. Do not add a `dsh.client` card.
