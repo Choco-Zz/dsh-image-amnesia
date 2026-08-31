@@ -3,33 +3,24 @@ import { wrapRuntime } from "./wrap-adapter.js";
 
 export const name = "dsh-image-amnesia";
 export const inject = ["llm"];
+/** Settings namespace shown in 设置 → 插件 → 插件配置. Must match the client card key. */
+export const NS = "image-amnesia";
 
-function fallbackConfig() {
-  return {
-    enabled: true,
-    maxImages: 1,
-    maxBytes: 2097152,
-    keepAtLeast: 1,
-  };
-}
-
-async function loadSchema() {
-  try {
-    const mod = await import("@deepseek-ai/schemastery");
-    const z = mod.default ?? mod;
-    return z.object({
-      enabled: z.boolean().default(true),
-      maxImages: z.number().step(1).min(1).max(64).default(1),
-      maxBytes: z.number().step(1).min(1024).default(2097152),
-      keepAtLeast: z.number().step(1).min(1).max(16).default(1),
-    });
-  } catch {
-    return null;
+async function loadSchemaLib() {
+  for (const spec of ["@deepseek-ai/schemastery", "schemastery"]) {
+    try {
+      const mod = await import(spec);
+      return mod.default ?? mod;
+    } catch {
+      /* try next */
+    }
   }
+  return null;
 }
 
 export function apply(ctx, config = {}) {
   let current = normalizePolicy({ ...DEFAULT_POLICY, ...config });
+  let readSource = () => ({ ...DEFAULT_POLICY, ...config });
   const stats = {
     last: null,
     record(result) {
@@ -50,40 +41,44 @@ export function apply(ctx, config = {}) {
 
   const disposeWrap = wrapRuntime(ctx.llm, () => current, stats, ctx);
 
-  const wireSettings = async (schema) => {
-    if (!schema) return;
+  const refresh = () => {
     try {
-      const settings = await import("@deepseek-ai/dsh-settings");
-      if (typeof settings.installSettingsSection !== "function") return;
-      const ns = typeof settings.settingsNamespace === "function"
-        ? settings.settingsNamespace(name)
-        : name;
-      settings.installSettingsSection(ctx, ns, schema, config, {
-        setSource: (source) => {
-          try {
-            current = normalizePolicy({ ...DEFAULT_POLICY, ...config, ...source() });
-          } catch {
-            current = normalizePolicy({ ...DEFAULT_POLICY, ...config });
-          }
-        },
-        onChange: () => {},
-      });
-    } catch (error) {
-      ctx.logger?.debug?.("dsh-image-amnesia: settings section skipped");
-      ctx.logger?.debug?.(error);
+      current = normalizePolicy({ ...DEFAULT_POLICY, ...config, ...readSource() });
+    } catch {
+      current = normalizePolicy({ ...DEFAULT_POLICY, ...config });
     }
   };
 
-  const attachSettings = (schema) => {
-    if (typeof ctx.inject === "function") {
-      try {
-        ctx.inject(["settings"], () => { void wireSettings(schema); });
-        return;
-      } catch { /* settings not in this profile */ }
+  void (async () => {
+    const z = await loadSchemaLib();
+    let settings;
+    try {
+      settings = await import("@deepseek-ai/dsh-settings");
+    } catch {
+      settings = null;
     }
-    void wireSettings(schema);
-  };
-  void loadSchema().then(attachSettings);
+    if (!z || typeof settings?.installSettingsSection !== "function") {
+      ctx.logger?.warn?.("dsh-image-amnesia: settings page unavailable; edit image-amnesia in settings.yaml");
+      return;
+    }
+    const schema = z.object({
+      enabled: z.boolean().default(true),
+      maxImages: z.number().step(1).min(1).max(64).default(1),
+      maxBytes: z.number().step(1).min(1024).default(2097152),
+      keepAtLeast: z.number().step(1).min(1).max(16).default(1),
+    });
+    settings.installSettingsSection(ctx, settings.settingsNamespace(NS), schema, config, {
+      setSource: (source) => {
+        readSource = source;
+      },
+      onChange: () => {
+        refresh();
+        ctx.logger?.info?.(
+          `dsh-image-amnesia: policy maxImages=${current.maxImages} maxBytes=${current.maxBytes} keepAtLeast=${current.keepAtLeast} enabled=${current.enabled}`
+        );
+      },
+    });
+  })();
 
   if (typeof ctx.effect === "function") {
     ctx.effect(() => () => disposeWrap(), "dsh-image-amnesia.unwrap");
@@ -93,5 +88,3 @@ export function apply(ctx, config = {}) {
     `dsh-image-amnesia: armed (maxImages=${current.maxImages}, maxBytes=${current.maxBytes}, keepAtLeast=${current.keepAtLeast})`
   );
 }
-
-export { fallbackConfig as defaultConfig };
