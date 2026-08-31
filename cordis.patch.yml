@@ -1,0 +1,10 @@
+# Global image-amnesia: wrap every LLM adapter in this profile.
+# Session logs keep original images; only the outbound request is stripped.
+- insert:
+    - id: image-amnesia
+      name: 'dsh-image-amnesia'
+      config:
+        enabled: true
+        maxImages: 1
+        maxBytes: 2097152
+        keepAtLeast: 1
