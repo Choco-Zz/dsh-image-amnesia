@@ -48,7 +48,7 @@ Web 长驻进程一般会热载 patch；若设置页没出现 `dsh-image-amnesia
 | `maxBytes` | `6291456`（6MB） | 留下的图合计体积上限 |
 | `keepAtLeast` | `1` | 即使超体积也至少留最新 N 张，避免原生看图变成 0 张 |
 
-设置页路径：**设置 → 插件 → 插件配置 → Image amnesia**。默认 `maxImages=6`。卡片若还没出现，刷新页面或重启 DSH Desktop。也可以改 `~/.dsh/settings.yaml` 里的 `image-amnesia.maxImages`。
+改上限：编辑 `~/.dsh/settings.yaml` 的 `image-amnesia.maxImages`，或改插件 `cordis.patch.yml`。不要给这个包加 `dsh.client`——不完整的浏览器半侧会让 DSH Desktop 起不来。
 
 ## 怎么验证
 
