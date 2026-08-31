@@ -34,7 +34,7 @@ Install once per **profile**. You do not install it per agent. Subagents, task-b
 | `maxBytes` | `6291456` | Byte budget for kept images |
 | `keepAtLeast` | `1` | Never drop the newest N images |
 
-Settings → Plugins → Plugin configuration → Image amnesia. Default is 6 images / 6MB. Refresh or restart DSH if the card is missing. You can also edit `image-amnesia.maxImages` in `settings.yaml`.
+Edit `image-amnesia.maxImages` in `settings.yaml` or this package's `cordis.patch.yml`. Do not add a `dsh.client` half unless it is a real lazy-CJS client bundle — a stub card prevented DSH Desktop from starting.
 
 ## Verify
 
