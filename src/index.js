@@ -3,7 +3,7 @@ import { wrapRuntime } from "./wrap-adapter.js";
 
 export const name = "dsh-image-amnesia";
 export const inject = ["llm"];
-/** Settings namespace shown in 设置 → 插件 → 插件配置. Must match the client card key. */
+/** Settings namespace in ~/.dsh/settings.yaml. No browser card — a stub client bundle took down the GUI. */
 export const NS = "image-amnesia";
 
 async function loadSchemaLib() {
@@ -50,34 +50,31 @@ export function apply(ctx, config = {}) {
   };
 
   void (async () => {
-    const z = await loadSchemaLib();
-    let settings;
     try {
-      settings = await import("@deepseek-ai/dsh-settings");
-    } catch {
-      settings = null;
+      const z = await loadSchemaLib();
+      let settings;
+      try {
+        settings = await import("@deepseek-ai/dsh-settings");
+      } catch {
+        settings = null;
+      }
+      if (!z || typeof settings?.installSettingsSection !== "function") return;
+      const schema = z.object({
+        enabled: z.boolean().default(true),
+        maxImages: z.number().step(1).min(1).max(64).default(6),
+        maxBytes: z.number().step(1).min(1024).default(6291456),
+        keepAtLeast: z.number().step(1).min(1).max(16).default(1),
+      });
+      settings.installSettingsSection(ctx, settings.settingsNamespace(NS), schema, config, {
+        setSource: (source) => {
+          readSource = source;
+        },
+        onChange: refresh,
+      });
+    } catch (error) {
+      ctx.logger?.warn?.("dsh-image-amnesia: settings registration skipped");
+      ctx.logger?.debug?.(error);
     }
-    if (!z || typeof settings?.installSettingsSection !== "function") {
-      ctx.logger?.warn?.("dsh-image-amnesia: settings page unavailable; edit image-amnesia in settings.yaml");
-      return;
-    }
-    const schema = z.object({
-      enabled: z.boolean().default(true),
-      maxImages: z.number().step(1).min(1).max(64).default(6),
-      maxBytes: z.number().step(1).min(1024).default(6291456),
-      keepAtLeast: z.number().step(1).min(1).max(16).default(1),
-    });
-    settings.installSettingsSection(ctx, settings.settingsNamespace(NS), schema, config, {
-      setSource: (source) => {
-        readSource = source;
-      },
-      onChange: () => {
-        refresh();
-        ctx.logger?.info?.(
-          `dsh-image-amnesia: policy maxImages=${current.maxImages} maxBytes=${current.maxBytes} keepAtLeast=${current.keepAtLeast} enabled=${current.enabled}`
-        );
-      },
-    });
   })();
 
   if (typeof ctx.effect === "function") {
