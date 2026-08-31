@@ -10,8 +10,8 @@ export const OMITTED_IMAGE_TEXT =
 
 export const DEFAULT_POLICY = Object.freeze({
   enabled: true,
-  maxImages: 1,
-  maxBytes: 2 * 1024 * 1024,
+  maxImages: 6,
+  maxBytes: 6 * 1024 * 1024,
   keepAtLeast: 1,
 });
 
