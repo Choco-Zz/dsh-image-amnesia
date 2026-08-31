@@ -48,7 +48,7 @@ Web 长驻进程一般会热载 patch；若设置页没出现 `dsh-image-amnesia
 | `maxBytes` | `2097152`（2MB） | 留下的图合计体积上限 |
 | `keepAtLeast` | `1` | 即使超体积也至少留最新 N 张，避免原生看图变成 0 张 |
 
-设置页：**设置 → 插件配置 → dsh-image-amnesia**。
+设置页路径：**设置 → 插件 → 插件配置 → Image amnesia**。把 `maxImages` 改成 3 即可。卡片若还没出现，刷新页面或重启 DSH Desktop。也可以改 `~/.dsh/settings.yaml` 里的 `image-amnesia.maxImages`。
 
 同一条用户消息里贴了 3 张参考图、又希望模型同时看见，把 `maxImages` 调到 3。
 
