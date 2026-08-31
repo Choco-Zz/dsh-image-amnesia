@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.2
+
+- Default `maxImages` is 6 and `maxBytes` is 6MB so a short reference set still reaches native vision.
+
 ## 1.0.1
 
 - Register the `image-amnesia` settings namespace and a Plugin configuration card so `maxImages` is editable in the GUI.
