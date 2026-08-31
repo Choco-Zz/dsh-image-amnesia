@@ -63,8 +63,8 @@ export function apply(ctx, config = {}) {
     }
     const schema = z.object({
       enabled: z.boolean().default(true),
-      maxImages: z.number().step(1).min(1).max(64).default(1),
-      maxBytes: z.number().step(1).min(1024).default(2097152),
+      maxImages: z.number().step(1).min(1).max(64).default(6),
+      maxBytes: z.number().step(1).min(1024).default(6291456),
       keepAtLeast: z.number().step(1).min(1).max(16).default(1),
     });
     settings.installSettingsSection(ctx, settings.settingsNamespace(NS), schema, config, {
