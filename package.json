@@ -1,13 +1,12 @@
 {
   "name": "dsh-image-amnesia",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Keep native vision, drop historical images before they hit relay providers. Global DeepSeek Harness bundle for every agent.",
   "type": "module",
   "main": "src/index.js",
   "exports": {
     ".": "./src/index.js",
     "./policy": "./src/policy.js",
-    "./client": "./src/client.js",
     "./package.json": "./package.json"
   },
   "files": [
@@ -23,13 +22,6 @@
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"
-    },
-    "client": {
-      "platform": "web",
-      "inject": [
-        "@deepseek-ai/dsh-client-ui-slots",
-        "@deepseek-ai/dsh-client-ui-settings"
-      ]
     }
   },
   "keywords": [
